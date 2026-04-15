@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1935568176357228094}
   - component: {fileID: 8323558278824337410}
   m_Layer: 0
-  m_Name: Enemy
+  m_Name: Orc
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -77,7 +77,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1378406252391678146, guid: 22b93f9a2269fb44aa3303c82b12f0d6, type: 3}
+  m_Sprite: {fileID: 7819795421736181519, guid: 2461c627504da184eaa846bafca42d80, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -100,3 +100,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e6af9ae9b9994a4aa64cf02dbd363f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  data: {fileID: 11400000, guid: 8d518ea06c4851842894eded0728e17e, type: 2}
