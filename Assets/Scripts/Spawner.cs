@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.Burst.CompilerServices;
 using UnityEngine;
@@ -5,11 +6,13 @@ using UnityEngine.Pool;
 
 public class Spawner : MonoBehaviour
 {
+    public static event Action<int> OnWaveChanged;
     [SerializeField] WaveData[] waves;
     private int _currentWaveIndex = 0;
     private WaveData _currentWave => waves[_currentWaveIndex];
     private float _spawnTimer;
     private int _spawnCounter = 0;
+    private int _waveCounter = 0;
     private int _enemiesRemoved = 0;
 
     private float _timeBetweenWaves = 2f;
@@ -41,6 +44,10 @@ public class Spawner : MonoBehaviour
     {
         Enemy.OnEnemyReachedEnd -= HandleEnemyReachedEnd;
     }
+    void Start()
+    {
+        OnWaveChanged?.Invoke(_waveCounter);
+    }
 
     void Update()
     {
@@ -50,6 +57,8 @@ public class Spawner : MonoBehaviour
             if(_waveCooldown <= 0)
             {
                 _currentWaveIndex = (_currentWaveIndex + 1) % waves.Length; // continue to next wave 
+                _waveCounter++;
+                OnWaveChanged?.Invoke(_waveCounter);
                 _spawnCounter = 0;
                 _enemiesRemoved = 0;
                 _spawnTimer = 0; // immediately spawn the next wave
