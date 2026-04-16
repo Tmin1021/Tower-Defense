@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Wave 3
   m_EditorClassIdentifier: 
   enemyType: 2
-  spawInterval: 4
-  enemiesPerWave: 5
+  spawInterval: 1
+  enemiesPerWave: 15

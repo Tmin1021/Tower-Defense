@@ -15,10 +15,10 @@ public class Spawner : MonoBehaviour
     private int _waveCounter = 0;
     private int _enemiesRemoved = 0;
 
-    private float _timeBetweenWaves = 2f;
+    private float _timeBetweenWaves = 1f;
     private float _waveCooldown;
     private bool _isBetweenWaves = false;
-    // public GameObject Prefab;
+    
     [SerializeField] private ObjectPooler orcPool;
     [SerializeField] private ObjectPooler dragonPool;
     [SerializeField] private ObjectPooler kaijuPool;
@@ -38,11 +38,13 @@ public class Spawner : MonoBehaviour
     void OnEnable()
     {
         Enemy.OnEnemyReachedEnd += HandleEnemyReachedEnd;
+        Enemy.OnEnemyDestroyed += HandleEnemyDestroyed;
     }
 
     void OnDisable()
     {
         Enemy.OnEnemyReachedEnd -= HandleEnemyReachedEnd;
+        Enemy.OnEnemyDestroyed -= HandleEnemyDestroyed;
     }
     void Start()
     {
@@ -89,6 +91,11 @@ public class Spawner : MonoBehaviour
         {    
             GameObject spawnedObject = pool.GetPooledObject();
             spawnedObject.transform.position = transform.position;
+
+            float healthMultiplier = 1f + (_waveCounter * 0.1f); // +10% each wave
+            Enemy enemy = spawnedObject.GetComponent<Enemy>();
+            enemy.Initialize(healthMultiplier);
+
             spawnedObject.SetActive(true);
         }
     }
@@ -97,6 +104,11 @@ public class Spawner : MonoBehaviour
     {
         _enemiesRemoved++;
 
-        Debug.Log(data.name);
+        // Debug.Log(data.name);
+    }
+
+    private void HandleEnemyDestroyed(Enemy enemy)
+    {
+        _enemiesRemoved++;
     }
 }
