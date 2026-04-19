@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class UIController : MonoBehaviour
@@ -9,6 +11,12 @@ public class UIController : MonoBehaviour
 
     [SerializeField] private GameObject towerPanel;
 
+    [SerializeField] private GameObject towerCardPrefab;
+    [SerializeField] private Transform cardsContainer;
+
+    [SerializeField] private TowerData[] towers;
+    private List<GameObject> activeCards = new List<GameObject>();
+    private Platform _currentPlatform;
 
     void OnEnable()
     {
@@ -16,6 +24,7 @@ public class UIController : MonoBehaviour
         GameManager.OnLivesChanged += UpdateLiveText;
         GameManager.OnResourcesChanged += UpdateResourcesText; 
         Platform.OnPlatformClicked += HandlePlatformClicked;
+        TowerCard.OnTowerSelected += HandleTowerSelected;
     }
     void OnDisable()
     {
@@ -23,6 +32,7 @@ public class UIController : MonoBehaviour
         GameManager.OnLivesChanged -= UpdateLiveText;
         GameManager.OnResourcesChanged -= UpdateResourcesText;
         Platform.OnPlatformClicked -= HandlePlatformClicked;
+        TowerCard.OnTowerSelected -= HandleTowerSelected;
     }
 
     private void UpdateWaveText(int currentWave)
@@ -40,15 +50,48 @@ public class UIController : MonoBehaviour
     private void HandlePlatformClicked(Platform platform)
     {
         ShowTowerPanel();
+        _currentPlatform = platform;
     }
     private void ShowTowerPanel()
     {
         towerPanel.SetActive(true);
         GameManager.Instance.SetTimeScale(0f); // freeze
+        PopulateTowerCards();
     }
     public void HideTowerPanel()
     {
         towerPanel.SetActive(false);
         GameManager.Instance.SetTimeScale(1f); // continue
+    }
+
+    private void PopulateTowerCards()
+    {
+        // clear old cards
+        foreach(var card in activeCards)
+        {
+            Destroy(card);
+        }
+
+        activeCards.Clear();
+
+        foreach(var tower in towers)
+        {
+            GameObject towerCardObject = Instantiate(towerCardPrefab, cardsContainer);
+            TowerCard towerCard = towerCardObject.GetComponent<TowerCard>();
+            towerCard.Initiliazed(tower);
+            activeCards.Add(towerCardObject);
+        }
+    }
+
+    private void HandleTowerSelected(TowerData data) 
+    {
+        if(_currentPlatform == null)
+        {
+            return;
+        }
+
+        _currentPlatform.PlaceTower(data);
+        _currentPlatform = null;
+        HideTowerPanel();
     }
 }

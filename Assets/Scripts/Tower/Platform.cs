@@ -17,12 +17,16 @@ public class Platform : MonoBehaviour
             if(raycastHit.collider != null)
             {
                 Platform platform = raycastHit.collider.GetComponent<Platform>();
-                if(platform != null)
+                if(platform == this)
                 {
-                    // Debug.Log("Platform clicked");
                     OnPlatformClicked?.Invoke(this);
                 }
             }
         }
+    }
+
+    public void PlaceTower(TowerData data)
+    {
+        Instantiate(data.prefab, transform.position, Quaternion.identity, transform);
     }
 }
